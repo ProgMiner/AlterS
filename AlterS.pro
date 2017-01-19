@@ -4,10 +4,7 @@
 #
 #-------------------------------------------------
 
-LIBS += -LC:/OpenSSL/lib -lubsec
-INCLUDEPATH += C:/OpenSSL/include
-
-QT       += core gui network
+QT       += core gui xml
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -33,3 +30,8 @@ HEADERS  += mainwindow.h \
         main.h
 
 FORMS    += mainwindow.ui
+
+unix|win32: LIBS += -LC:/OpenSSL-Win32/lib/ -lubsec -llibeay32
+
+INCLUDEPATH += C:/OpenSSL-Win32/include
+DEPENDPATH += C:/OpenSSL-Win32/include

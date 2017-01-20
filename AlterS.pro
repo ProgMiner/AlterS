@@ -28,8 +28,8 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
         main.h \
-    aes.h \
-    account.h
+        aes.h \
+        account.h
 
 FORMS    += mainwindow.ui
 

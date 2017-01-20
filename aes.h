@@ -24,7 +24,7 @@ namespace Main {
                 inlen = textLen - offset;
                 inlen = inlen < BUFSIZE ? inlen : BUFSIZE;
                 if(inlen < 1) break;
-                memcpy(inbuf + offset, text, inlen);
+                memcpy(inbuf, text + offset, inlen);
                 if(!EVP_EncryptUpdate(&ctx, outbuf, &outlen, inbuf, inlen)) return false;
                 dstArr.append((char*) outbuf, outlen);
                 offset += inlen;
@@ -53,7 +53,7 @@ namespace Main {
                 inlen = textLen - offset;
                 inlen = inlen < BUFSIZE ? inlen : BUFSIZE;
                 if(inlen < 1) break;
-                memcpy(inbuf + offset, text, inlen);
+                memcpy(inbuf, text + offset, inlen);
                 if(!EVP_DecryptUpdate(&ctx, outbuf, &outlen, inbuf, inlen)) return false;
                 dstArr.append((char*) outbuf, outlen);
                 offset += inlen;

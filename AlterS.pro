@@ -33,7 +33,7 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-unix|win32: LIBS += -LC:/OpenSSL-Win32/lib/ -lubsec -llibeay32
+unix|win32: LIBS += -LC:/OpenSSL-Win32/lib/ -llibeay32
 
 INCLUDEPATH += C:/OpenSSL-Win32/include
 DEPENDPATH += C:/OpenSSL-Win32/include

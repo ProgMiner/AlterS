@@ -1,9 +1,7 @@
 #include "main.h"
 #include "mainwindow.h"
-#include <openssl/rand.h>
-#include <openssl/rsa.h>
-#include <openssl/pem.h>
-#include <openssl/bio.h>
+#include "aes.h"
+#include "account.h"
 
 namespace Main{
 
@@ -25,6 +23,16 @@ QList<QString> accountList(){
 
 int main(int argc, char *argv[]){
     QApplication a(argc, argv);
+
+    unsigned char key[32], iv[8];
+    unsigned char *enc = nullptr, *dec = nullptr;
+    int encLen = 0, decLen = 0;
+    AES::sha256((unsigned char*) "testkey", 8, key);
+    RAND_bytes(iv, 8);
+    qDebug() << AES::encrypt((unsigned char*) "testtext", 9, key, iv, 4, &enc, &encLen);
+    qDebug() << AES::decrypt(enc, encLen, key, iv, 4, &dec, &decLen);
+    qDebug() << QByteArray::fromRawData((char*) dec, decLen);
+    return 0;
 
     if(accountList().size() < 1){
         if(QMessageBox::question(nullptr, APPNAME, "Нет учётных записей. Создать?", "Да", "Нет") == 1) return 1;

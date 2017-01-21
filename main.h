@@ -1,5 +1,4 @@
-#ifndef MAIN_H
-#define MAIN_H
+#pragma once
 
 #include "mainwindow.h"
 #include <QApplication>
@@ -26,4 +25,3 @@ namespace Main {
     extern Account currentAccount;
 
 }
-#endif // MAIN_H

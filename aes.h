@@ -1,3 +1,5 @@
+#pragma once
+
 #include <openssl/evp.h>
 #include <openssl/sha.h>
 #include <QByteArray>
@@ -11,7 +13,7 @@ namespace Main {
             SHA256(text, textLen, dst);
         }
 
-        bool encrypt(unsigned char* text, int textLen, unsigned char key[32], unsigned char iv[8], int BUFSIZE, unsigned char** dst, int* dstLen){
+        bool encrypt(unsigned char* text, int textLen, unsigned char key[32], unsigned char* iv, int BUFSIZE, unsigned char** dst, int* dstLen){
             unsigned char inbuf[BUFSIZE], outbuf[BUFSIZE];
             int inlen, outlen, offset = 0;
             EVP_CIPHER_CTX ctx;
@@ -40,7 +42,7 @@ namespace Main {
             return true;
         }
 
-        bool decrypt(unsigned char* text, int textLen, unsigned char key[32], unsigned char iv[8], int BUFSIZE, unsigned char** dst, int* dstLen){
+        bool decrypt(unsigned char* text, int textLen, unsigned char key[32], unsigned char* iv, int BUFSIZE, unsigned char** dst, int* dstLen){
             unsigned char inbuf[BUFSIZE], outbuf[BUFSIZE];
             int inlen, outlen, offset = 0;
             EVP_CIPHER_CTX ctx;

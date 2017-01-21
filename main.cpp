@@ -30,11 +30,12 @@ int main(int argc, char *argv[]){
                                                    QInputDialog().windowFlags() & ~Qt::WindowContextHelpButtonHint);
         Account acc = Account::create(seedString.toUtf8().data(), seedString.toUtf8().size());
         acc.nickname = "ProgMiner";
-        unsigned char* str;
-        int l = acc.compileData(&str);
-        QFile f("test.txt");
-        if(f.open(QIODevice::WriteOnly)) f.write((char*) str, l);
-        f.close();
+        Account load;
+        unsigned char* save;
+        int saveLen;
+        qDebug() << acc.save((unsigned char*) "testkey", &save, &saveLen);
+        qDebug() << Account::load(save, saveLen, (unsigned char*) "testkey", &load);
+        qDebug() << load.nickname;
         return 0;
     }
 

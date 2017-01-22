@@ -64,6 +64,17 @@ namespace Main{
             return true;
         }
 
+        bool saveFile(unsigned char key[32], QString filename){
+            QFile file(filename);
+            if(!file.open(QIODevice::WriteOnly)) return false;
+            unsigned char* src;
+            int srcLen = 0;
+            if(!save(key, &src, &srcLen)) return false;
+            file.write((char*) src, srcLen);
+            file.close();
+            return true;
+        }
+
         static Account decompileData(unsigned char* src, int srcLen){
             QList<QByteArray> srcList = QByteArray::fromRawData((char*) src, srcLen).split('\0');
             Account ret;
@@ -96,11 +107,26 @@ namespace Main{
             {
                 unsigned char sha[32];
                 AES::sha256(tmp1, tmpi1, sha);
-                qDebug() << memcmp(sha, tmp2, 32);
                 if(memcmp(sha, tmp2, 32) != 0) return false;
                 free(tmp2);
             }//Parse compiled data
             *dst = decompileData(tmp1, tmpi1);
+            return true;
+        }
+
+        static bool loadFile(unsigned char key[32], QString filename, Account* dst){
+            QFile file(filename);
+            if(!file.open(QIODevice::ReadOnly)) return false;
+            unsigned char* src;
+            int srcLen = 0;
+            {
+                QByteArray ba = file.readAll();
+                src = (unsigned char*) malloc(srcLen = ba.size());
+                memcpy(src, ba.data(), srcLen);
+            }
+            file.close();
+            if(!load(src, srcLen, key, dst)) return false;
+            free(src);
             return true;
         }
 

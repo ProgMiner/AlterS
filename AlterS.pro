@@ -24,16 +24,27 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp
+        mainwindow.cpp \
+    mainpagewidget.cpp \
+    accountpagewidget.cpp \
+    settingspagewidget.cpp
 
 HEADERS  += mainwindow.h \
         main.h \
-        aes.h \
-        account.h
+        account.h \
+    mainpagewidget.h \
+    accountpagewidget.h \
+    settingspagewidget.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    mainpagewidget.ui \
+    accountpagewidget.ui \
+    settingspagewidget.ui
 
 unix|win32: LIBS += -LC:/OpenSSL-Win32/lib/ -llibeay32
 
 INCLUDEPATH += C:/OpenSSL-Win32/include
 DEPENDPATH += C:/OpenSSL-Win32/include
+
+RESOURCES += \
+    resources.qrc

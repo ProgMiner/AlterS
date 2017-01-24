@@ -1,7 +1,6 @@
 #pragma once
 
 #include "main.h"
-#include "aes.h"
 #include <openssl/pem.h>
 #include <openssl/sha.h>
 #include <openssl/rand.h>
@@ -12,7 +11,14 @@ namespace Main{
     struct Account{
 
         RSA* key;
-        QString id, nickname;
+        QString id, nickname, statusText;
+        QPixmap* avatar = nullptr;
+
+        QString showingName(int maxSize = 0){
+            QString ret = nickname.isEmpty() ? id : nickname;
+            if(maxSize == 0 || ret.size() <= maxSize) return ret;
+            return ret.left(maxSize - 3) + "...";
+        }
 
         int compileData(unsigned char** dst){
             QByteArray ret;
@@ -28,9 +34,19 @@ namespace Main{
                 pem[len] = (unsigned char) '\0';
                 ret.append(QByteArray::fromRawData((char*) pem, len + 1));
                 free(pem);
-            }
-            //QString nickname
+            } //QString nickname
             ret.append(DEFAULTCODEC.fromUnicode(nickname)).append('\0');
+            //QString statusText
+            ret.append(DEFAULTCODEC.fromUnicode(statusText)).append('\0');
+            { //QPixmap avatar
+                QByteArray ba;
+                QBuffer buf(&ba);
+                if(buf.open(QIODevice::WriteOnly)){
+                    avatar->save(&buf, "PNG");
+                    buf.close();
+                }
+                ret.append(ba.toBase64()).append('\0');
+            }
 
             *dst = (unsigned char*) malloc(ret.size());
             memcpy(*dst, ret.data(), ret.size());
@@ -78,14 +94,23 @@ namespace Main{
         static Account decompileData(unsigned char* src, int srcLen){
             QList<QByteArray> srcList = QByteArray::fromRawData((char*) src, srcLen).split('\0');
             Account ret;
+            //QString id
             ret.id = DEFAULTCODEC.toUnicode(srcList[0].data(), srcList[0].size());
-            {
+            { //RSA* key
                 BIO* bio = BIO_new(BIO_s_mem());
                 BIO_write(bio, srcList[1].data(), srcList[1].size());
                 ret.key = PEM_read_bio_RSAPrivateKey(bio, nullptr, nullptr, nullptr);
                 BIO_free(bio);
-            }
+            } //QString nickname
             ret.nickname = DEFAULTCODEC.toUnicode(srcList[2].data(), srcList[2].size());
+            //QString statusText
+            ret.statusText = DEFAULTCODEC.toUnicode(srcList[3].data(), srcList[3].size());
+            {//QPixmap
+                srcList[4] = QByteArray::fromBase64(srcList[4]);
+                ret.avatar = new QPixmap();
+                ret.avatar->loadFromData(srcList[4], "PNG");
+            }
+
             return ret;
         }
 
@@ -153,6 +178,8 @@ namespace Main{
             Account ret;
             ret.key = rsa;
             ret.id = generateID(rsa);
+            ret.avatar = new QPixmap;
+            ret.avatar->load(":image/avatar.png", "PNG");
             return ret;
         }
 

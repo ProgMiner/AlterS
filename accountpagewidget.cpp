@@ -8,12 +8,14 @@
 
 AccountPageWidget::AccountPageWidget(Main::Account acc, QWidget *parent) : QWidget(parent), ui(new Ui::AccountPageWidget){
     ui->setupUi(this);
+    hide();
     this->account = acc;
     ui->label->setPixmap(*acc.avatar);
     ui->label->setMask(QRegion(-1, -1, 64, 64, QRegion::Ellipse));
     ui->label_2->setText(acc.showingName());
     ui->label_3->setText(acc.statusText);
     ui->label_5->setText(acc.id);
+    show();
 }
 
 AccountPageWidget::~AccountPageWidget(){

@@ -10,6 +10,9 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow){
     ui->setupUi(this);
     setWindowTitle((QString) APPNAME + ": " + Main::currentAccount.showingName());
+    QPalette pal = palette();
+    pal.setBrush(QPalette::Background, QBrush(Qt::white));
+    setPalette(pal);
     setCentralWidget(new MainPageWidget(this));
     applyChanges();
 }

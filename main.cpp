@@ -18,6 +18,14 @@ namespace Main{
         return ret;
     }
 
+    namespace Crypt{
+
+        void sha256(unsigned char* text, int textLen, unsigned char dst[32]){
+            SHA256(text, textLen, dst);
+        }
+
+    }
+
 }
 
 using namespace Main;
@@ -40,12 +48,12 @@ int main(int argc, char *argv[]){
         {
             unsigned char key[32];
             QByteArray ba = DEFAULTCODEC.fromUnicode(password);
-            AES::sha256((unsigned char*) ba.data(), ba.size(), key);
+            Crypt::sha256((unsigned char*) ba.data(), ba.size(), key);
             acc.saveFile(key, ACCOUNTSDIR + acc.id + ".account");
         }
         currentAccount = acc;
     } else {
-        selectacc:
+selectacc:
         QList<QString> accList = accountList();
         bool ok = false;
         QString accName = QInputDialog::getItem(nullptr, APPNAME, "Обнаружены следующие аккаунты.\nВыберите аккаунт для входа:",
@@ -61,7 +69,7 @@ int main(int argc, char *argv[]){
         while(!ret){
             unsigned char key[32];
             QByteArray ba = DEFAULTCODEC.fromUnicode(password);
-            AES::sha256((unsigned char*) ba.data(), ba.size(), key);
+            Crypt::sha256((unsigned char*) ba.data(), ba.size(), key);
             ret = Account::loadFile(key, ACCOUNTSDIR + accName + ".account", &acc);
             if(!ret) password = QInputDialog::getText(nullptr, APPNAME, "Неверный пароль, попробуйте снова:",
                                                       QLineEdit::Normal, QString(), &ok,

@@ -10,7 +10,7 @@ SettingsPageWidget::SettingsPageWidget(QWidget *parent) : QWidget(parent), ui(ne
     //General
 
     //Accounts
-    ui->tableWidget->setColumnWidth(0, 400);
+    ui->tableWidget->setColumnWidth(0, 800);
     ui->tableWidget->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
     refreshAccountsTable();
     //Account
@@ -62,7 +62,7 @@ void SettingsPageWidget::on_action_triggered(){
     {
         unsigned char key[32];
         QByteArray ba = DEFAULTCODEC.fromUnicode(password);
-        Main::AES::sha256((unsigned char*) ba.data(), ba.size(), key);
+        Main::Crypt::sha256((unsigned char*) ba.data(), ba.size(), key);
         acc.saveFile(key, ACCOUNTSDIR + acc.id + ".account");
     }
     refreshAccountsTable();
@@ -86,7 +86,7 @@ void SettingsPageWidget::on_pushButton_clicked(){
     if(!ok) return;
     unsigned char key[32];
     QByteArray ba = DEFAULTCODEC.fromUnicode(password);
-    Main::AES::sha256((unsigned char*) ba.data(), ba.size(), key);
+    Main::Crypt::sha256((unsigned char*) ba.data(), ba.size(), key);
     if(!Main::currentAccount.loadFile(key, ACCOUNTSDIR + Main::currentAccount.id + ".account", new Main::Account))
         if(QMessageBox::question(this, "Сохранение аккаунта", "Пароль не совпадает со старым или аккаунт удалён. Сохранить с новым паролем?", "Да", "Нет") == 1) return;
     Main::currentAccount.saveFile(key, ACCOUNTSDIR + Main::currentAccount.id + ".account");

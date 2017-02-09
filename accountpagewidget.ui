@@ -13,8 +13,8 @@
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <property name="styleSheet">
-   <string notr="true"/>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">

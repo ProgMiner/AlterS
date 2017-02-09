@@ -53,7 +53,7 @@
         <widget class="QTableWidget" name="tableWidget">
          <property name="maximumSize">
           <size>
-           <width>400</width>
+           <width>800</width>
            <height>16777215</height>
           </size>
          </property>

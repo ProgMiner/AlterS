@@ -27,7 +27,9 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     mainpagewidget.cpp \
     accountpagewidget.cpp \
-    settingspagewidget.cpp
+    settingspagewidget.cpp \
+    aes.cpp \
+    rsa.cpp
 
 HEADERS  += mainwindow.h \
         main.h \

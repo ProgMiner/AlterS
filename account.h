@@ -45,7 +45,7 @@ namespace Main{
                     avatar->save(&buf, "PNG");
                     buf.close();
                 }
-                ret.append(ba.toBase64()).append('\0');
+                ret.append(qCompress(ba, 9).toBase64()).append('\0');
             }
 
             *dst = (unsigned char*) malloc(ret.size());
@@ -60,13 +60,13 @@ namespace Main{
             tmpi1 = compileData(&tmp1);
             //Get compiled data's hash and make data to encrypt
             tmp2 = (unsigned char*) malloc(tmpi2 = 32 + tmpi1);
-            AES::sha256(tmp1, tmpi1, tmp2);
+            Crypt::sha256(tmp1, tmpi1, tmp2);
             memcpy(tmp2 + 32, tmp1, tmpi1);
             free(tmp1);
             { //Encrypt
                 unsigned char iv[1024];
                 RAND_bytes(iv, 1024);
-                if(!AES::encrypt(tmp2, tmpi2, key, iv, 1024, &tmp1, &tmpi1)) return false;
+                if(!Crypt::encryptAES(tmp2, tmpi2, key, iv, 1024, &tmp1, &tmpi1)) return false;
                 free(tmp2);
                 //Make data to return
                 tmp2 = (unsigned char*) malloc(tmpi2 = tmpi1 + 1024);
@@ -106,7 +106,7 @@ namespace Main{
             //QString statusText
             ret.statusText = DEFAULTCODEC.toUnicode(srcList[3].data(), srcList[3].size());
             {//QPixmap
-                srcList[4] = QByteArray::fromBase64(srcList[4]);
+                srcList[4] = qUncompress(QByteArray::fromBase64(srcList[4]));
                 ret.avatar = new QPixmap();
                 ret.avatar->loadFromData(srcList[4], "PNG");
             }
@@ -123,7 +123,7 @@ namespace Main{
                 tmp1 = (unsigned char*) malloc(tmpi1 = srcLen - 1024);
                 memcpy(tmp1, src + 1024, tmpi1);
                 //Decrypt
-                if(!AES::decrypt(tmp1, tmpi1, key, iv, 1024, &tmp2, &tmpi2)) return false;
+                if(!Crypt::decryptAES(tmp1, tmpi1, key, iv, 1024, &tmp2, &tmpi2)) return false;
                 free(tmp1);
             } //Parse decrypted data and test
             tmp1 = (unsigned char*) malloc(tmpi1 = tmpi2 - 32);
@@ -131,7 +131,7 @@ namespace Main{
             realloc(tmp2, 32);
             {
                 unsigned char sha[32];
-                AES::sha256(tmp1, tmpi1, sha);
+                Crypt::sha256(tmp1, tmpi1, sha);
                 if(memcmp(sha, tmp2, 32) != 0) return false;
                 free(tmp2);
             }//Parse compiled data
